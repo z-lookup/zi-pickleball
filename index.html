@@ -1,0 +1,2258 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zi Pickleball Playground</title>
+<style>
+:root {
+  --red:#E31837;
+  --red-dark:#B5122B;
+  --red-light:#FFF0F2;
+  --ink:#24262B;
+  --muted:#6B7280;
+  --bg:#F5F6F8;
+  --white:#FFFFFF;
+  --line:#E2E5EA;
+  --green:#16794B;
+  --green-light:#E8F7EE;
+  --court-green:#176B43;
+  --court-blue:#2679B9;
+  --shadow:0 3px 12px rgba(30,35,45,.055);
+}
+
+* {box-sizing:border-box}
+
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:14px;
+}
+
+header {
+  background:var(--red);
+  color:white;
+  padding:22px 24px;
+  border-bottom:5px solid var(--red-dark);
+}
+
+.brand-row {
+  display:flex;
+  align-items:center;
+  gap:13px;
+}
+
+.brand-mark {
+  background:white;
+  color:var(--red);
+  width:46px;
+  height:46px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:26px;
+  font-weight:900;
+}
+
+header h1 {font-size:24px;margin:0 0 5px}
+header p {margin:0;color:#FFE7EB}
+
+.header-tag {
+  margin-left:auto;
+  border:1px solid rgba(255,255,255,.55);
+  padding:8px 11px;
+  border-radius:7px;
+  font-size:12px;
+}
+
+nav {
+  display:flex;
+  gap:5px;
+  overflow-x:auto;
+  background:white;
+  padding:10px 16px;
+  border-bottom:1px solid var(--line);
+  position:sticky;
+  top:0;
+  z-index:5;
+}
+
+button,input,select {
+  font:inherit;
+  border:1px solid #CDD2DA;
+  border-radius:7px;
+  padding:10px;
+  background:white;
+  color:var(--ink);
+}
+
+button {cursor:pointer;white-space:nowrap}
+button:hover {filter:brightness(.97)}
+
+button.primary,nav button.active {
+  background:var(--red);
+  color:white;
+  border-color:var(--red);
+}
+
+button.primary:hover {background:var(--red-dark)}
+button.danger {color:var(--red);border-color:#F1B7C0}
+button:disabled {opacity:.4;cursor:not-allowed}
+input,select {width:100%;min-width:0}
+
+label {
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:5px;
+}
+
+main {max-width:1500px;margin:auto;padding:20px}
+h2 {font-size:22px;margin:4px 0 16px}
+h3 {font-size:16px;margin:0 0 12px}
+p {line-height:1.5}
+.muted,.small {color:var(--muted)}
+.small {font-size:12px}
+
+.panel {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:17px;
+  margin-bottom:16px;
+  box-shadow:var(--shadow);
+  min-width:0;
+}
+
+.stats {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.stat {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:16px;
+  min-width:0;
+}
+
+.stat strong {
+  display:block;
+  font-size:27px;
+  margin-top:8px;
+  overflow-wrap:anywhere;
+}
+
+.stat .stat-label {color:var(--muted);font-size:12px}
+
+.grid {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+}
+
+.two {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.formrow {
+  display:grid;
+  grid-template-columns:2fr 1fr auto;
+  gap:10px;
+  align-items:end;
+}
+
+.actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+}
+
+.tablewrap {overflow-x:auto}
+table {width:100%;border-collapse:collapse;min-width:600px}
+
+th,td {
+  padding:11px 9px;
+  text-align:left;
+  border-bottom:1px solid var(--line);
+  vertical-align:middle;
+}
+
+th {
+  color:var(--muted);
+  font-size:12px;
+  background:#FAFAFB;
+}
+
+tbody tr:hover {background:#FFF9FA}
+
+.pill {
+  display:inline-block;
+  border-radius:20px;
+  padding:4px 9px;
+  background:var(--red-light);
+  color:var(--red-dark);
+  font-size:12px;
+}
+
+.pill.win {background:var(--green-light);color:var(--green)}
+.pill.loss {background:#FFF0F0;color:var(--red-dark)}
+
+.courts {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+  align-items:start;
+}
+
+/* COURT CARD */
+
+.court {
+  padding:0;
+  overflow:hidden;
+  border-top:4px solid var(--red);
+}
+
+.court-top {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:15px 16px 8px;
+}
+
+.court-top h3 {margin:0;font-size:18px}
+
+.court-subtitle {
+  padding:0 16px 12px;
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:.4px;
+  text-transform:uppercase;
+}
+
+.court-status {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border-radius:20px;
+  padding:5px 9px;
+  background:#F1F3F5;
+  color:#555D68;
+  font-size:11px;
+  font-weight:bold;
+  white-space:nowrap;
+}
+
+.court-status::before {
+  content:"";
+  display:inline-block;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#9CA3AF;
+}
+
+.court-status.playing {
+  background:#E8F7EE;
+  color:#16794B;
+}
+
+.court-status.playing::before {
+  background:#16794B;
+  box-shadow:0 0 0 3px rgba(22,121,75,.12);
+}
+
+.court-status.ready {
+  background:#FFF4D6;
+  color:#8B6500;
+}
+
+.court-status.ready::before {background:#E5A000}
+
+/* TOP-DOWN COURT */
+
+.court-stage {
+  padding:5px 12px 14px;
+  background:#F7F8FA;
+}
+
+.pickle-court {
+  position: relative;
+  width: 50%;
+  aspect-ratio: 1.5;
+  min-height: 0;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 3px solid #FFFFFF;
+  border-radius: 5px;
+  background: var(--court-green);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.12),
+    0 5px 12px rgba(0,0,0,.12);
+}
+
+/* White court perimeter and court lines */
+.court-inner-line {
+  position:absolute;
+  inset:7px;
+  border:2px solid rgba(255,255,255,.95);
+  pointer-events:none;
+}
+
+/* The two blue playing halves */
+.court-half {
+  position:absolute;
+  top:9px;
+  bottom:9px;
+  width:calc(50% - 9px);
+  background:var(--court-blue);
+}
+
+.court-half.left {left:9px}
+.court-half.right {right:9px}
+
+/* Kitchen / non-volley zones */
+.kitchen {
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:25%;
+  border-left:2px solid white;
+  border-right:2px solid white;
+  background:rgba(255,255,255,.07);
+  pointer-events:none;
+}
+
+.kitchen.left {right:0}
+.kitchen.right {left:0}
+
+/* Center lines on each side */
+.court-center-line {
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:2px;
+  background:rgba(255,255,255,.95);
+  transform:translateX(-50%);
+  pointer-events:none;
+}
+
+/* Net */
+.court-net {
+  position:absolute;
+  z-index:3;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:7px;
+  transform:translateX(-50%);
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #F7F7F7 0,
+      #F7F7F7 5px,
+      #D6D6D6 5px,
+      #D6D6D6 8px
+    );
+  border-left:1px solid #555;
+  border-right:1px solid #555;
+  box-shadow:0 0 5px rgba(0,0,0,.35);
+}
+
+.net-label {
+  position:absolute;
+  z-index:4;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  writing-mode:vertical-rl;
+  background:#20242B;
+  color:white;
+  padding:5px 3px;
+  border-radius:3px;
+  font-size:8px;
+  font-weight:bold;
+  letter-spacing:1px;
+  box-shadow:0 2px 5px rgba(0,0,0,.2);
+}
+
+/* Player positioning */
+.court-player-position {
+  position:absolute;
+  z-index:2;
+  width:39%;
+  height:36%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:3px;
+}
+
+.court-player-position.left-top {
+  left:4%;
+  top:8%;
+}
+
+.court-player-position.left-bottom {
+  left:4%;
+  bottom:8%;
+}
+
+.court-player-position.right-top {
+  right:4%;
+  top:8%;
+}
+
+.court-player-position.right-bottom {
+  right:4%;
+  bottom:8%;
+}
+
+.court-player {
+  width:100%;
+  max-width:180px;
+  min-width:0;
+  min-height:55px;
+  padding:7px 5px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  border:1px solid rgba(255,255,255,.9);
+  border-radius:7px;
+  background:rgba(15,40,62,.82);
+  color:white;
+  text-align:center;
+  box-shadow:0 3px 8px rgba(0,0,0,.2);
+  overflow-wrap:anywhere;
+}
+
+.court-player-name {
+  font-size:clamp(10px,1.05vw,13px);
+  line-height:1.2;
+  font-weight:bold;
+  max-width:100%;
+}
+
+.court-player-meta {
+  font-size:clamp(8px,.8vw,10px);
+  line-height:1.25;
+  color:#F0F7FF;
+}
+
+.court-player-side {
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+  font-weight:bold;
+  color:#FFFFFF;
+  text-shadow:0 1px 3px rgba(0,0,0,.6);
+  margin-bottom:3px;
+}
+
+.court-team-label {
+  position:absolute;
+  z-index:2;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:9px;
+  letter-spacing:.5px;
+  font-weight:bold;
+  color:rgba(255,255,255,.9);
+  text-shadow:0 1px 3px rgba(0,0,0,.45);
+  pointer-events:none;
+}
+
+.court-team-label.left-label {left:3px}
+.court-team-label.right-label {right:3px}
+
+.court-scorebar {
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:8px;
+  align-items:center;
+  margin-top:12px;
+  text-align:center;
+}
+
+.court-score-side {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:8px 5px;
+}
+
+.court-score-side span {
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  font-weight:bold;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+}
+
+.court-score-side strong {
+  display:block;
+  font-size:25px;
+  margin-top:2px;
+  color:var(--ink);
+  font-variant-numeric:tabular-nums;
+}
+
+.court-score-dash {
+  color:#9CA3AF;
+  font-size:20px;
+  font-weight:bold;
+}
+
+.court-player-list {
+  padding:0 16px;
+}
+
+.team {
+  padding:10px 12px;
+  background:#F7F7F9;
+  border-radius:8px;
+  margin:8px 0;
+  border-left:3px solid var(--red);
+}
+
+.team strong {display:block;margin-bottom:5px}
+
+.court-controls {
+  padding:0 16px 16px;
+}
+
+.timer-row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:12px 0;
+  border-bottom:1px solid var(--line);
+  margin-bottom:12px;
+}
+
+.timer-label {
+  font-size:11px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.6px;
+}
+
+.timer {
+  font-size:24px;
+  font-weight:bold;
+  font-variant-numeric:tabular-nums;
+  color:var(--ink);
+}
+
+.scorebox {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.scorebox input {
+  font-size:23px;
+  text-align:center;
+  font-weight:bold;
+}
+
+.replace-panel {
+  background:#FFF9FA;
+  border:1px solid #F5D7DC;
+  border-radius:9px;
+  padding:12px;
+  margin:12px 16px;
+}
+
+.replace-panel summary {
+  cursor:pointer;
+  font-weight:bold;
+  color:var(--red-dark);
+}
+
+.replace-panel .actions {margin-top:10px}
+.replace-panel button {white-space:normal;text-align:left}
+
+.empty {
+  padding:24px;
+  text-align:center;
+  color:var(--muted);
+}
+
+.section-title {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.player-card {
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:13px;
+}
+
+.player-card strong {display:block;margin:8px 0}
+.score-big {font-weight:bold;color:var(--red-dark);white-space:nowrap}
+
+footer {
+  text-align:center;
+  padding:22px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+input[type=number] {appearance:textfield}
+
+@media(max-width:1000px) {
+  .courts {grid-template-columns:1fr}
+  .pickle-court {aspect-ratio:1.8;min-height:230px}
+  .court-player-name {font-size:13px}
+  .court-player-meta {font-size:10px}
+}
+
+@media(max-width:760px) {
+  main {padding:12px}
+  header {padding:18px 14px}
+  header h1 {font-size:20px}
+  .header-tag {display:none}
+  .stats,.grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .two {grid-template-columns:1fr}
+  .formrow {grid-template-columns:1fr}
+  nav {padding:8px}
+  .court-stage {padding:5px 8px 12px}
+  .pickle-court {aspect-ratio:1.35;min-height:210px}
+  .court-player {min-height:48px;padding:5px 3px}
+  .court-player-name {font-size:11px}
+  .court-player-meta {font-size:9px}
+}
+
+@media(max-width:400px) {
+  .stats,.grid {grid-template-columns:1fr 1fr;gap:8px}
+  .stat {padding:12px}
+  .stat strong {font-size:23px}
+  .pickle-court {aspect-ratio:1.1;min-height:210px}
+  .court-player-position {width:40%}
+  .court-player {min-height:45px}
+  .court-player-name {font-size:10px}
+  .court-player-meta {font-size:8px}
+  .court-score-side strong {font-size:21px}
+  .timer {font-size:21px}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="brand-row">
+    <div class="brand-mark">P</div>
+    <div>
+      <h1>Zi Pickleball Playground</h1>
+      <p>Fair Play · Player Rotation · Match Records · Rankings</p>
+    </div>
+    <div class="header-tag">OPEN PLAY MANAGER</div>
+  </div>
+</header>
+
+<nav id="nav">
+  <button class="active" data-tab="dashboard">Dashboard</button>
+  <button data-tab="players">Players</button>
+  <button data-tab="courts">Court Manager</button>
+  <button data-tab="queue">Next Up</button>
+  <button data-tab="rankings">Rankings</button>
+  <button data-tab="records">Player Records</button>
+  <button data-tab="history">Match History</button>
+  <button data-tab="backup">Backup & Restore</button>
+</nav>
+
+<main id="app"></main>
+
+<footer>
+  Zi Pickleball Playground · Browser-based prototype · Export backups regularly
+</footer>
+
+<script>
+"use strict";
+
+const STORAGE_KEY = "nv_pickleball_openplay_v2";
+const SKILLS = ["Beginner", "Intermediate", "Advanced"];
+const $ = id => document.getElementById(id);
+
+function freshState() {
+  return {
+    courtCount:2,
+    targetScore:11,
+    nextPlayerId:1,
+    nextMatchId:1,
+    players:[],
+    queue:[],
+    courts:[],
+    history:[]
+  };
+}
+
+function loadState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+    if (saved && Array.isArray(saved.players) &&
+        Array.isArray(saved.queue) && Array.isArray(saved.courts) &&
+        Array.isArray(saved.history)) {
+
+      saved.courtCount = Math.max(1, Number(saved.courtCount) || 2);
+      saved.targetScore = Math.max(1, Number(saved.targetScore) || 11);
+      saved.nextPlayerId ||= 1;
+      saved.nextMatchId ||= 1;
+
+      saved.players.forEach(p => {
+        p.wins = Number(p.wins) || 0;
+        p.losses = Number(p.losses) || 0;
+        p.games = Number(p.games) || 0;
+        p.rating = Number(p.rating) || 1000;
+        p.waitTurns = Number(p.waitTurns) || 0;
+        p.ratingHistory ||= [
+          {date:new Date().toISOString(),rating:p.rating}
+        ];
+      });
+
+      saved.courts.forEach(c => {
+        const wasRunning = Boolean(c.startedAt);
+
+        if (c.startedAt) {
+          c.elapsedBefore = (Number(c.elapsedBefore) || 0) +
+            Math.max(0, Math.floor((Date.now() - c.startedAt) / 1000));
+          c.startedAt = Date.now();
+        } else {
+          c.startedAt = null;
+        }
+
+        c.players ||= [];
+        c.teams ||= [];
+        c.elapsedBefore ||= 0;
+
+        // Keep a paused or refreshed match locked against player changes.
+        c.hasStarted = Boolean(
+          c.hasStarted || wasRunning || c.elapsedBefore > 0
+        );
+      });
+
+      return saved;
+    }
+  } catch (e) {
+    console.warn("Saved data could not be loaded", e);
+  }
+
+  return freshState();
+}
+
+let state = loadState();
+let currentTab = "dashboard";
+
+function save() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {
+    alert("Browser storage is full or unavailable. Export a backup.");
+  }
+}
+
+const esc = value => String(value ?? "").replace(/[&<>"']/g, ch => ({
+  "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+}[ch]));
+
+function player(id) {
+  return state.players.find(p => p.id === Number(id));
+}
+
+function nameOf(id) {
+  return player(id)?.name || "Unknown player";
+}
+
+function ratingOf(id) {
+  return Number(player(id)?.rating || 1000);
+}
+
+function skillOf(id) {
+  return player(id)?.skill || "Beginner";
+}
+
+function winRateOf(id) {
+  const p = player(id);
+  if (!p || !p.games) return 0;
+  return Math.round((p.wins / p.games) * 100);
+}
+
+function playerDisplay(id) {
+  return `${esc(nameOf(id))} (${esc(skillOf(id))} – ${winRateOf(id)}%)`;
+}
+
+function activePlayerIds() {
+  return state.courts.flatMap(c => c.players || []);
+}
+
+function availableIds() {
+  const busy = new Set(activePlayerIds());
+  return state.queue.filter(id => player(id) && !busy.has(id));
+}
+
+function formatTime(seconds) {
+  seconds = Math.max(0, Math.floor(seconds || 0));
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+
+  return [h,m,s].map(n => String(n).padStart(2,"0")).join(":");
+}
+
+function elapsed(c) {
+  return (Number(c.elapsedBefore) || 0) +
+    (c.startedAt
+      ? Math.max(0,Math.floor((Date.now()-c.startedAt)/1000))
+      : 0);
+}
+
+function getCourt(number) {
+  return state.courts.find(c => c.number === Number(number));
+}
+
+function ensureCourts() {
+  for (let n=1; n<=state.courtCount; n++) {
+    if (!getCourt(n)) {
+      state.courts.push({
+        number:n,
+        players:[],
+        teams:[],
+        startedAt:null,
+        elapsedBefore:0,
+        matchId:null,
+        startTime:null,
+        hasStarted:false
+      });
+    }
+  }
+
+  state.courts.forEach(c => {
+    c.players ||= [];
+    c.teams ||= [];
+    c.elapsedBefore ||= 0;
+
+    if (typeof c.hasStarted !== "boolean") {
+      c.hasStarted = Boolean(c.startedAt || c.elapsedBefore > 0);
+    }
+  });
+
+  state.courts = state.courts.filter(c => c.number <= state.courtCount);
+}
+
+function enqueue(id) {
+  const p = player(id);
+
+  if (p && !state.queue.includes(id) &&
+      !activePlayerIds().includes(id)) {
+    state.queue.push(id);
+    p.waitTurns = 0;
+  }
+}
+
+function registerPlayer(name,skill) {
+  name = name.trim();
+
+  if (!name) return alert("Enter the player's name.");
+
+  if (state.players.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+    return alert("A player with that name already exists.");
+  }
+
+  const p = {
+    id:state.nextPlayerId++,
+    name,
+    skill,
+    rating:1000,
+    wins:0,
+    losses:0,
+    games:0,
+    waitTurns:0,
+    ratingHistory:[{date:new Date().toISOString(),rating:1000}]
+  };
+
+  state.players.push(p);
+  enqueue(p.id);
+  save();
+  render();
+}
+
+function removePlayer(id) {
+  const p = player(id);
+  if (!p) return;
+
+  if (activePlayerIds().includes(id)) {
+    return alert("This player is currently assigned to a court. Replace them or finish the match first.");
+  }
+
+  if (!confirm("Remove " + p.name +
+      " from the active player list? Historical results will remain.")) {
+    return;
+  }
+
+  state.players = state.players.filter(x => x.id !== id);
+  state.queue = state.queue.filter(x => x !== id);
+  save();
+  render();
+}
+
+/* FAIR PLAY + FAIR ROTATION */
+
+function competitiveScore(id) {
+  const skillIndex = Math.max(0, SKILLS.indexOf(skillOf(id)));
+  return skillIndex * 350 + (ratingOf(id) - 1000) * 0.25;
+}
+
+function teamPower(ids) {
+  return ids.reduce((sum,id) => sum + competitiveScore(id), 0);
+}
+
+function balancedTeams(ids) {
+  if (ids.length !== 4) {
+    return [ids.slice(0,2),ids.slice(2,4)];
+  }
+
+  const [a,b,c,d] = ids;
+
+  const options = [
+    [[a,b],[c,d]],
+    [[a,c],[b,d]],
+    [[a,d],[b,c]]
+  ];
+
+  options.sort((team1,team2) => {
+    const diff1 = Math.abs(teamPower(team1[0])-teamPower(team1[1]));
+    const diff2 = Math.abs(teamPower(team2[0])-teamPower(team2[1]));
+    return diff1-diff2;
+  });
+
+  return options[0].map(team => team.slice());
+}
+
+function selectFairGroup(waiting) {
+  if (waiting.length < 4) return [];
+
+  const lookAhead = waiting.slice(0,Math.min(12,waiting.length));
+
+  let bestGroup = null;
+  let bestCost = Infinity;
+
+  for (let a=0; a<lookAhead.length-3; a++) {
+    for (let b=a+1; b<lookAhead.length-2; b++) {
+      for (let c=b+1; c<lookAhead.length-1; c++) {
+        for (let d=c+1; d<lookAhead.length; d++) {
+          const indexes = [a,b,c,d];
+          const ids = indexes.map(i => lookAhead[i]);
+          const teams = balancedTeams(ids);
+
+          const balanceCost = Math.abs(
+            teamPower(teams[0])-teamPower(teams[1])
+          );
+
+          const positionCost =
+            indexes.reduce((sum,index) => sum+index,0)*180;
+
+          const waitPriority = ids.reduce((sum,id) => {
+            return sum+(Number(player(id)?.waitTurns)||0);
+          },0);
+
+          const fairnessCredit = waitPriority*220;
+          const totalCost = balanceCost+positionCost-fairnessCredit;
+
+          if (totalCost < bestCost) {
+            bestCost = totalCost;
+            bestGroup = ids;
+          }
+        }
+      }
+    }
+  }
+
+  return bestGroup || waiting.slice(0,4);
+}
+
+function assignPlayersToCourt(c,ids) {
+  const selected = new Set(ids);
+
+  state.queue.forEach(id => {
+    const p = player(id);
+    if (!p) return;
+
+    if (selected.has(id)) {
+      p.waitTurns = 0;
+    } else {
+      p.waitTurns = (Number(p.waitTurns)||0)+1;
+    }
+  });
+
+  state.queue = state.queue.filter(id => !selected.has(id));
+
+  c.players = ids.slice();
+  c.teams = balancedTeams(ids);
+  c.startedAt = null;
+  c.elapsedBefore = 0;
+  c.hasStarted = false;
+  c.matchId = state.nextMatchId++;
+  c.startTime = new Date().toISOString();
+}
+
+function fillCourt(number,quiet=false) {
+  const c = getCourt(number);
+
+  if (!c || c.players.length) return false;
+
+  const waiting = availableIds();
+
+  if (waiting.length < 4) {
+    if (!quiet) {
+      alert("Four waiting players are required to fill this court.");
+    }
+    return false;
+  }
+
+  const group = selectFairGroup(waiting);
+  assignPlayersToCourt(c,group);
+
+  save();
+  render();
+  return true;
+}
+
+function fillAllCourts() {
+  let changed = false;
+
+  for (const c of state.courts) {
+    if (!c.players.length && availableIds().length >= 4) {
+      const group = selectFairGroup(availableIds());
+
+      if (group.length === 4) {
+        assignPlayersToCourt(c,group);
+        changed = true;
+      }
+    }
+  }
+
+  if (!changed) {
+    alert("No available court can be filled. At least four eligible waiting players are required.");
+  }
+
+  save();
+  render();
+}
+
+function startTimer(number) {
+  const c = getCourt(number);
+  if (!c || c.players.length !== 4 || c.startedAt) return;
+
+  c.startedAt = Date.now();
+  c.hasStarted = true;
+  save();
+  render();
+}
+
+function pauseTimer(number) {
+  const c = getCourt(number);
+  if (!c || !c.startedAt) return;
+
+  c.elapsedBefore = elapsed(c);
+  c.startedAt = null;
+  // hasStarted remains true so players cannot be changed after pausing.
+  save();
+  render();
+}
+
+/* PLAYER REPLACEMENT */
+
+function findReplacement(court, outgoingId) {
+  const candidates = availableIds().filter(id => id !== outgoingId);
+
+  if (!candidates.length) return null;
+
+  let bestId = null;
+  let bestCost = Infinity;
+
+  for (const candidateId of candidates) {
+    const trialPlayers = court.players.map(id =>
+      id === outgoingId ? candidateId : id
+    );
+
+    const teams = balancedTeams(trialPlayers);
+
+    const balanceCost = Math.abs(
+      teamPower(teams[0]) - teamPower(teams[1])
+    );
+
+    const skillDifference = Math.abs(
+      SKILLS.indexOf(skillOf(candidateId)) -
+      SKILLS.indexOf(skillOf(outgoingId))
+    );
+
+    const ratingDifference = Math.abs(
+      ratingOf(candidateId) - ratingOf(outgoingId)
+    );
+
+    const queuePosition = candidates.indexOf(candidateId);
+
+    // Prefer similar skill first, then a balanced matchup,
+    // similar rating, and a shorter wait in the queue.
+    const cost =
+      skillDifference * 10000 +
+      balanceCost +
+      ratingDifference * 0.5 +
+      queuePosition * 10;
+
+    if (cost < bestCost) {
+      bestCost = cost;
+      bestId = candidateId;
+    }
+  }
+
+  return bestId;
+}
+
+function changeCourtPlayer(courtNumber, outgoingId) {
+  const c = getCourt(courtNumber);
+
+  if (!c || c.players.length !== 4) {
+    return alert("This court does not have four assigned players.");
+  }
+
+  if (c.hasStarted || c.startedAt || c.elapsedBefore > 0) {
+    return alert("Players can only be changed before the match has started.");
+  }
+
+  if (!c.players.includes(outgoingId)) return;
+
+  const replacementId = findReplacement(c, outgoingId);
+
+  if (replacementId === null) {
+    return alert(
+      "No eligible replacement is available in the waiting queue. " +
+      "Add or queue another player before replacing this player."
+    );
+  }
+
+  const outgoingName = nameOf(outgoingId);
+  const replacementName = nameOf(replacementId);
+
+  if (!confirm(
+    "Replace " + outgoingName + " with " + replacementName +
+    " (" + skillOf(replacementId) + ")?"
+  )) return;
+
+  // Remove incoming player from the queue.
+  state.queue = state.queue.filter(id => id !== replacementId);
+
+  // Replace the player while preserving the other three players.
+  c.players = c.players.map(id =>
+    id === outgoingId ? replacementId : id
+  );
+
+  // Rebalance teams automatically.
+  c.teams = balancedTeams(c.players);
+
+  // The unavailable player returns to the end of the queue.
+  enqueue(outgoingId);
+
+  save();
+  render();
+
+  alert(
+    replacementName + " replaced " + outgoingName +
+    ". The teams have been rebalanced."
+  );
+}
+
+/* COURT RENDERING */
+
+function courtPlayerHTML(id,position,side) {
+  return `
+    <div class="court-player-position ${position}">
+      <div class="court-player">
+        <div class="court-player-side">${side}</div>
+        <div class="court-player-name">${esc(nameOf(id))}</div>
+        <div class="court-player-meta">
+          ${esc(skillOf(id))} · ${winRateOf(id)}% wins
+        </div>
+      </div>
+    </div>`;
+}
+
+function courtSurfaceHTML(c,teams) {
+  const positions = [
+    {id:teams[0][0],position:"left-top",side:"Team A"},
+    {id:teams[0][1],position:"left-bottom",side:"Team A"},
+    {id:teams[1][0],position:"right-top",side:"Team B"},
+    {id:teams[1][1],position:"right-bottom",side:"Team B"}
+  ];
+
+  return `
+    <div class="court-stage">
+      <div class="pickle-court">
+        <div class="court-half left">
+          <div class="kitchen left"></div>
+          <div class="court-center-line"></div>
+        </div>
+
+        <div class="court-half right">
+          <div class="kitchen right"></div>
+          <div class="court-center-line"></div>
+        </div>
+
+        <div class="court-inner-line"></div>
+
+        ${positions.map(p =>
+          courtPlayerHTML(p.id,p.position,p.side)
+        ).join("")}
+
+        <div class="court-net"></div>
+        <div class="net-label">NET</div>
+      </div>
+
+      <div class="court-scorebar">
+        <div class="court-score-side">
+          <span>Team A</span>
+          <strong id="displayScoreA-${c.number}">0</strong>
+        </div>
+
+        <div class="court-score-dash">VS</div>
+
+        <div class="court-score-side">
+          <span>Team B</span>
+          <strong id="displayScoreB-${c.number}">0</strong>
+        </div>
+      </div>
+    </div>`;
+}
+
+function courtHTML(c) {
+  const playing = c.players.length === 4;
+  const teams = c.teams?.length === 2
+    ? c.teams
+    : balancedTeams(c.players);
+
+  const statusClass = !playing
+    ? ""
+    : c.startedAt
+      ? "playing"
+      : "ready";
+
+  const statusText = !playing
+    ? "Available"
+    : c.startedAt
+      ? "Playing"
+      : c.hasStarted
+        ? "Paused"
+        : "Ready to start";
+
+  return `
+    <div class="panel court">
+      <div class="court-top">
+        <h3>🏓 Court ${c.number}</h3>
+        <span class="court-status ${statusClass}">${statusText}</span>
+      </div>
+
+      <div class="court-subtitle">
+        ${playing
+          ? "Doubles match · 2 vs 2"
+          : "Waiting for the next group"}
+      </div>
+
+      ${playing ? `
+        ${courtSurfaceHTML(c,teams)}
+
+        <div class="court-player-list">
+          <div class="team">
+            <strong>Team A</strong>
+            ${teams[0].map(playerDisplay).join(" & ")}
+          </div>
+
+          <div class="team">
+            <strong>Team B</strong>
+            ${teams[1].map(playerDisplay).join(" & ")}
+          </div>
+        </div>
+
+        ${!c.hasStarted ? `
+          <details class="replace-panel">
+            <summary>🔄 Replace an unavailable player</summary>
+            <p class="small">
+              Choose the player who cannot play. The system will select
+              a suitable waiting player with a similar skill level,
+              then rebalance the teams.
+            </p>
+            <div class="actions">
+              ${c.players.map(id => `
+                <button
+                  data-replace-player="${id}"
+                  data-replace-court="${c.number}">
+                  Replace ${esc(nameOf(id))}
+                </button>
+              `).join("")}
+            </div>
+          </details>
+        ` : `
+          <div style="padding:0 16px">
+            <p class="small muted">
+              Player changes are locked because this match has started.
+            </p>
+          </div>
+        `}
+
+        <div class="court-controls">
+          <div class="timer-row">
+            <div>
+              <div class="timer-label">Match duration</div>
+              <div class="small muted">
+                ${c.startedAt ? "Timer running" : c.hasStarted ? "Timer paused" : "Not started"}
+              </div>
+            </div>
+            <div class="timer" id="timer-${c.number}">
+              ${formatTime(elapsed(c))}
+            </div>
+          </div>
+
+          <div class="scorebox">
+            <div>
+              <label for="scoreA-${c.number}">Team A score</label>
+              <input id="scoreA-${c.number}" type="number"
+                min="0" max="99" value="0">
+            </div>
+            <div>
+              <label for="scoreB-${c.number}">Team B score</label>
+              <input id="scoreB-${c.number}" type="number"
+                min="0" max="99" value="0">
+            </div>
+          </div>
+
+          <p class="small">
+            Target: ${state.targetScore}. Win by 2.
+            Save the final score when the game ends.
+          </p>
+
+          <div class="actions">
+            ${c.startedAt
+              ? `<button data-pause="${c.number}">Pause timer</button>`
+              : `<button class="primary" data-start="${c.number}">
+                   ${c.hasStarted ? "Resume timer" : "Start game"}
+                 </button>`}
+
+            <button class="primary" data-result="${c.number}">
+              Save score & rotate
+            </button>
+          </div>
+        </div>
+      ` : `
+        <div class="court-stage">
+          <div class="pickle-court">
+            <div class="court-half left">
+              <div class="kitchen left"></div>
+              <div class="court-center-line"></div>
+            </div>
+            <div class="court-half right">
+              <div class="kitchen right"></div>
+              <div class="court-center-line"></div>
+            </div>
+            <div class="court-inner-line"></div>
+            <div class="court-net"></div>
+            <div class="net-label">NET</div>
+            <div style="
+              position:absolute;inset:0;z-index:2;
+              display:flex;align-items:center;justify-content:center;
+              color:white;text-align:center;font-weight:bold;
+              text-shadow:0 2px 4px rgba(0,0,0,.5);
+              pointer-events:none">
+              COURT ${c.number}<br>OPEN PLAY
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:0 16px 16px">
+          <p class="muted">
+            Four waiting players are needed to fill this court.
+          </p>
+          <button class="primary" data-fill="${c.number}"
+            ${availableIds().length < 4 ? "disabled" : ""}>
+            Assign fair-play group
+          </button>
+        </div>
+      `}
+    </div>`;
+}
+
+function bindCourtButtons() {
+  document.querySelectorAll("[data-fill]").forEach(b =>
+    b.onclick = () => fillCourt(Number(b.dataset.fill)));
+
+  document.querySelectorAll("[data-start]").forEach(b =>
+    b.onclick = () => startTimer(Number(b.dataset.start)));
+
+  document.querySelectorAll("[data-pause]").forEach(b =>
+    b.onclick = () => pauseTimer(Number(b.dataset.pause)));
+
+  document.querySelectorAll("[data-result]").forEach(b =>
+    b.onclick = () => recordResult(Number(b.dataset.result)));
+
+  document.querySelectorAll("[data-replace-player]").forEach(b => {
+    b.onclick = () => changeCourtPlayer(
+      Number(b.dataset.replaceCourt),
+      Number(b.dataset.replacePlayer)
+    );
+  });
+
+  // Update the court's visual score as score inputs change.
+  state.courts.forEach(c => {
+    const inputA = $("scoreA-" + c.number);
+    const inputB = $("scoreB-" + c.number);
+    const displayA = $("displayScoreA-" + c.number);
+    const displayB = $("displayScoreB-" + c.number);
+
+    if (inputA && displayA) {
+      inputA.oninput = () => {
+        displayA.textContent = inputA.value || "0";
+      };
+    }
+
+    if (inputB && displayB) {
+      inputB.oninput = () => {
+        displayB.textContent = inputB.value || "0";
+      };
+    }
+  });
+}
+
+function recordResult(number) {
+  const c = getCourt(number);
+  if (!c || c.players.length !== 4) return;
+
+  const scoreA = Number($("scoreA-"+number)?.value);
+  const scoreB = Number($("scoreB-"+number)?.value);
+
+  if (!Number.isInteger(scoreA) || !Number.isInteger(scoreB) ||
+      scoreA < 0 || scoreB < 0 || scoreA === scoreB) {
+    return alert("Enter two different, non-negative whole-number scores.");
+  }
+
+  const winningScore = Math.max(scoreA,scoreB);
+  const losingScore = Math.min(scoreA,scoreB);
+
+  if (winningScore < state.targetScore || winningScore-losingScore < 2) {
+    return alert("A team must reach at least " + state.targetScore +
+      " points and win by 2 before the result can be saved.");
+  }
+
+  const winner = scoreA > scoreB ? 0 : 1;
+  const teams = c.teams || balancedTeams(c.players);
+  const winningIds = teams[winner];
+  const losingIds = teams[1-winner];
+  const finishedAt = new Date().toISOString();
+  const duration = elapsed(c);
+
+  const beforeRatings = {};
+  c.players.forEach(id => beforeRatings[id] = ratingOf(id));
+
+  const avgA = teams[0].reduce((sum,id) => sum+ratingOf(id),0)/2;
+  const avgB = teams[1].reduce((sum,id) => sum+ratingOf(id),0)/2;
+  const expectedA = 1/(1+Math.pow(10,(avgB-avgA)/400));
+  const actualA = winner === 0 ? 1 : 0;
+  const k = 24;
+  const deltaA = Math.round(k*(actualA-expectedA));
+  const deltaB = -deltaA;
+
+  c.players.forEach(id => {
+    const p = player(id);
+    if (!p) return;
+
+    p.games++;
+
+    if (winningIds.includes(id)) p.wins++;
+    else p.losses++;
+
+    const delta = teams[0].includes(id) ? deltaA : deltaB;
+    p.rating = Math.max(100,Math.round(p.rating+delta));
+
+    p.ratingHistory ||= [];
+    p.ratingHistory.push({date:finishedAt,rating:p.rating});
+  });
+
+  const ratingChanges = c.players.map(id => ({
+    id,
+    name:nameOf(id),
+    ratingBefore:beforeRatings[id],
+    ratingAfter:ratingOf(id),
+    ratingChange:ratingOf(id)-beforeRatings[id]
+  }));
+
+  state.history.unshift({
+    id:c.matchId,
+    court:number,
+    players:c.players.slice(),
+    teams:teams.map(team => team.slice()),
+    scoreA,
+    scoreB,
+    winningTeam:winner===0 ? "Team A" : "Team B",
+    losingTeam:winner===0 ? "Team B" : "Team A",
+    winner,
+    duration,
+    startedAt:c.startTime || finishedAt,
+    finishedAt,
+    ratingChanges
+  });
+
+  const outgoing = c.players.slice();
+
+  c.players = [];
+  c.teams = [];
+  c.startedAt = null;
+  c.elapsedBefore = 0;
+  c.hasStarted = false;
+  c.matchId = null;
+  c.startTime = null;
+
+  outgoing.forEach(enqueue);
+
+  const waiting = availableIds();
+
+  if (waiting.length >= 4) {
+    const nextGroup = selectFairGroup(waiting);
+    assignPlayersToCourt(c,nextGroup);
+  }
+
+  const nextAssigned = c.players.length === 4;
+
+  save();
+  render();
+
+  alert("Result saved: " + (winner===0 ? "Team A" : "Team B") +
+    " wins " + scoreA + "–" + scoreB + "." +
+    (nextAssigned
+      ? " The next fair-play group is assigned to Court "+number+"."
+      : " Waiting for four eligible players to fill the court."));
+}
+
+function queueHTML(limit=Infinity) {
+  const waiting = availableIds();
+
+  if (!waiting.length) {
+    return '<div class="empty">No players are waiting.</div>';
+  }
+
+  return `<div class="tablewrap"><table>
+    <thead>
+      <tr>
+        <th>Queue #</th><th>Player</th><th>Skill</th>
+        <th>Rating</th><th>Win rate</th><th>Wait priority</th>
+      </tr>
+    </thead>
+    <tbody>${waiting.slice(0,limit).map((id,i)=>`
+      <tr>
+        <td>${i+1}</td>
+        <td>${esc(nameOf(id))}</td>
+        <td>${esc(skillOf(id))}</td>
+        <td>${ratingOf(id)}</td>
+        <td>${winRateOf(id)}%</td>
+        <td>${Number(player(id)?.waitTurns)||0}</td>
+      </tr>`).join("")}
+    </tbody>
+  </table></div>`;
+}
+
+function resetDashboard() {
+  const confirmed = confirm(
+    "START A NEW PICKLEBALL SESSION?\n\n" +
+    "This will:\n" +
+    "• Clear all active court assignments and timers\n" +
+    "• Reset the waiting queue\n" +
+    "• Reset player wins, losses, games, and ratings\n" +
+    "• Clear the previous match history\n\n" +
+    "Your registered player names, skill levels, court count, " +
+    "and target score will be retained.\n\n" +
+    "This action cannot be undone. Export a backup first if you " +
+    "want to keep the previous session's records.\n\n" +
+    "Do you want to start a new game?"
+  );
+
+  if (!confirmed) return;
+
+  // Reset each registered player's session statistics.
+  state.players.forEach(p => {
+    p.wins = 0;
+    p.losses = 0;
+    p.games = 0;
+    p.rating = 1000;
+    p.waitTurns = 0;
+
+    p.ratingHistory = [{
+      date: new Date().toISOString(),
+      rating: 1000
+    }];
+  });
+
+  // Put every registered player back into the waiting queue.
+  state.queue = state.players.map(p => p.id);
+
+  // Clear all current court assignments and timers.
+  state.courts = [];
+
+  // Start match numbering again for the new session.
+  state.nextMatchId = 1;
+
+  // Clear the previous session's match history.
+  state.history = [];
+
+  // Recreate empty courts using the existing court count.
+  ensureCourts();
+
+  // Save the new session and show the dashboard.
+  save();
+  currentTab = "dashboard";
+  render();
+
+  alert(
+    "New game started!\n\n" +
+    state.players.length + " registered player(s) are ready in the queue, " +
+    state.courtCount + " court(s) are available."
+  );
+}
+function renderDashboard() {
+  const active = state.courts.filter(c=>c.players.length).length;
+
+  $("app").innerHTML = `
+    <h2>Session Dashboard</h2>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-label">Registered players</span>
+        <strong>${state.players.length}</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Courts in use</span>
+        <strong>${active}/${state.courtCount}</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Waiting players</span>
+        <strong>${availableIds().length}</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Completed matches</span>
+        <strong>${state.history.length}</strong>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Session settings</h3>
+      <div class="grid">
+        <div>
+          <label for="courtCount">Number of courts</label>
+          <input id="courtCount" type="number" min="1" max="30"
+            value="${state.courtCount}">
+        </div>
+        <div>
+          <label for="targetScore">Target score</label>
+          <input id="targetScore" type="number" min="1" max="99"
+            value="${state.targetScore}">
+        </div>
+        <div style="align-self:end">
+          <button class="primary" id="saveSettings">Save settings</button>
+        </div>
+        <div style="align-self:end">
+          <button id="quickBackup">Export backup</button>
+        </div>
+
+<div style="align-self:end">
+  <button class="danger" id="newGame">🔄 New Game</button>
+</div>
+
+      </div>
+      <p class="small">
+        Each court has its own count-up timer. Matches do not end based on time.
+      </p>
+    </div>
+
+    <div class="panel">
+      <div class="section-title"><h3>Fair-play rules</h3></div>
+      <p class="small">
+        The system checks the upcoming queue for balanced groups of four.
+        It prioritizes waiting players, balances skill levels and ratings,
+        and returns completed players to the back of the queue.
+      </p>
+    </div>
+
+    <div class="panel">
+      <div class="section-title">
+        <h3>🏓 Live Courts</h3>
+        <button data-goto="courts">Manage courts</button>
+      </div>
+      <p class="small">
+        Top-down court view · Live scores · Match timers · Player skill levels
+        and win rates
+      </p>
+      <div class="courts">${state.courts.map(courtHTML).join("")}</div>
+    </div>
+
+    <div class="panel">
+      <div class="section-title">
+        <h3>Next up</h3>
+        <button data-goto="queue">View full queue</button>
+      </div>
+      ${queueHTML(8)}
+    </div>`;
+
+  $("saveSettings").onclick=()=>{
+    const count=Number($("courtCount").value);
+    const target=Number($("targetScore").value);
+
+    if (!Number.isInteger(count)||count<1||count>30) {
+      return alert("Number of courts must be between 1 and 30.");
+    }
+
+    if (!Number.isInteger(target)||target<1||target>99) {
+      return alert("Target score must be between 1 and 99.");
+    }
+
+    if (state.courts.some(c=>c.number>count&&c.players.length)) {
+      return alert("Finish the active matches on courts you want to remove first.");
+    }
+
+    state.courtCount=count;
+    state.targetScore=target;
+    ensureCourts();
+    save();
+    render();
+  };
+
+$("quickBackup").onclick = exportBackup;
+$("newGame").onclick = resetDashboard;
+bindCourtButtons();
+}
+
+function renderPlayers() {
+  $("app").innerHTML = `
+    <h2>Player Management</h2>
+
+    <div class="panel">
+      <h3>Register a player</h3>
+      <form id="addPlayer" class="formrow">
+        <div>
+          <label for="playerName">Player name</label>
+          <input id="playerName" maxlength="80" required
+            placeholder="Enter full name">
+        </div>
+        <div>
+          <label for="playerSkill">Skill level</label>
+          <select id="playerSkill">
+            ${SKILLS.map(s=>`<option>${s}</option>`).join("")}
+          </select>
+        </div>
+        <button class="primary" type="submit">Add player</button>
+      </form>
+      <p class="small">
+        New players start at rating 1000 and join the end of the waiting queue.
+        Players who wait through multiple selections gain priority.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Registered players (${state.players.length})</h3>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th><th>Skill</th><th>Rating</th><th>W–L</th>
+              <th>Win rate</th><th>Status</th><th>Wait priority</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody>${state.players.map(p=>{
+            const active=activePlayerIds().includes(p.id);
+            const waiting=state.queue.includes(p.id);
+
+            return `<tr>
+              <td>${esc(p.name)}</td>
+              <td>
+                <select data-skill="${p.id}">
+                  ${SKILLS.map(s=>`
+                    <option ${p.skill===s?"selected":""}>${s}</option>
+                  `).join("")}
+                </select>
+              </td>
+              <td>${p.rating}</td>
+              <td>${p.wins}–${p.losses}</td>
+              <td>${winRateOf(p.id)}%</td>
+              <td>${active?"Playing":waiting?"Waiting":"Not queued"}</td>
+              <td>${Number(p.waitTurns)||0}</td>
+              <td><button class="danger" data-remove="${p.id}">Remove</button></td>
+            </tr>`;
+          }).join("")||
+          '<tr><td colspan="8" class="empty">No players registered yet.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="actions">
+        <button id="queueAvailable">Queue all available players</button>
+        <button id="clearQueue" class="danger">Clear waiting queue</button>
+      </div>
+    </div>`;
+
+  $("addPlayer").onsubmit=e=>{
+    e.preventDefault();
+    registerPlayer($("playerName").value,$("playerSkill").value);
+  };
+
+  document.querySelectorAll("[data-skill]").forEach(sel=>sel.onchange=()=>{
+    const p=player(sel.dataset.skill);
+    if(p){p.skill=sel.value;save();render();}
+  });
+
+  document.querySelectorAll("[data-remove]").forEach(b=>
+    b.onclick=()=>removePlayer(Number(b.dataset.remove)));
+
+  $("queueAvailable").onclick=()=>{
+    state.players.forEach(p=>enqueue(p.id));
+    save();
+    render();
+  };
+
+  $("clearQueue").onclick=()=>{
+    if(confirm("Remove all waiting players from the queue? Player records will remain.")){
+      state.queue=[];
+      save();
+      render();
+    }
+  };
+}
+
+function renderCourts() {
+  $("app").innerHTML = `
+    <h2>Court Manager</h2>
+
+    <div class="panel">
+      <p class="muted">
+        Fair-play rotation prioritizes players who have waited longest,
+        considers skill levels and ratings, and balances the teams.
+        Players cannot play on two courts simultaneously.
+      </p>
+      <p class="small">
+        Before a match starts, expand "Replace an unavailable player"
+        to automatically select a suitable player from the queue.
+      </p>
+      <div class="actions">
+        <button class="primary" id="fillAll">Fill all available courts</button>
+      </div>
+    </div>
+
+    <div class="courts">${state.courts.map(courtHTML).join("")}</div>`;
+
+  $("fillAll").onclick=fillAllCourts;
+  bindCourtButtons();
+}
+
+function renderQueue() {
+  const waiting=availableIds();
+  const nextGroup=selectFairGroup(waiting);
+
+  $("app").innerHTML=`
+    <h2>Next Up & Waiting Queue</h2>
+
+    <div class="panel">
+      <h3>Suggested fair-play group</h3>
+      ${nextGroup.length===4
+        ? `<p class="small">
+             These four players are the current recommended group based on
+             queue position, waiting priority, skill level, and ratings.
+           </p>
+           <div class="grid">${nextGroup.map((id,i)=>`
+             <div class="player-card">
+               <span class="small">Selected player ${i+1}</span>
+               <strong>${esc(nameOf(id))}</strong>
+               <span class="pill">${esc(skillOf(id))}</span>
+               <p class="small">Rating: ${ratingOf(id)}</p>
+               <p class="small">Win rate: ${winRateOf(id)}%</p>
+             </div>`).join("")}</div>`
+        : `<p class="muted">${waiting.length} player(s) waiting. Four are needed to start a game.</p>`}
+    </div>
+
+    <div class="panel">
+      <h3>Full waiting queue (${waiting.length})</h3>
+      <p class="small">
+        Players who remain waiting gain priority when the next group is selected.
+        Players finishing a match return to the back of the queue.
+      </p>
+      ${queueHTML()}
+    </div>
+
+    <div class="panel">
+      <button class="primary" id="fillAllQueue">Fill all available courts</button>
+    </div>`;
+
+  $("fillAllQueue").onclick=fillAllCourts;
+}
+
+function renderRankings() {
+  const ranked=state.players.slice().sort((a,b)=>
+    b.rating-a.rating||b.wins-a.wins||a.losses-b.losses);
+
+  $("app").innerHTML=`
+    <h2>Player Rankings</h2>
+    <div class="panel">
+      <p class="small">
+        Rankings are based on skill rating, with wins and losses shown separately.
+        Skill categories remain manually editable and are also used for fair-play team balancing.
+      </p>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th><th>Player</th><th>Skill</th><th>Rating</th>
+              <th>Wins</th><th>Losses</th><th>Win rate</th><th>Games</th>
+            </tr>
+          </thead>
+          <tbody>${ranked.map((p,i)=>`
+            <tr>
+              <td><strong>${i+1}</strong></td>
+              <td>${esc(p.name)}</td>
+              <td>${esc(p.skill)}</td>
+              <td><strong>${p.rating}</strong></td>
+              <td>${p.wins}</td>
+              <td>${p.losses}</td>
+              <td>${p.games?(p.wins/p.games*100).toFixed(1):"0.0"}%</td>
+              <td>${p.games}</td>
+            </tr>`).join("")||
+            '<tr><td colspan="8" class="empty">Register players to begin.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function renderPlayerRecords() {
+  const sorted=state.players.slice().sort((a,b)=>a.name.localeCompare(b.name));
+  const selectedId=Number($("recordPlayerSelect")?.value||sorted[0]?.id||0);
+  const p=player(selectedId);
+
+  if(!p){
+    $("app").innerHTML=`<h2>Player Records Repository</h2>
+      <div class="panel empty">Register players and record matches to build individual histories.</div>`;
+    return;
+  }
+
+  const matches=state.history.filter(m=>(m.players||[]).includes(p.id))
+    .sort((a,b)=>new Date(b.finishedAt||0)-new Date(a.finishedAt||0));
+
+  const wins=matches.filter(m=>{
+    const teamA=m.teams?.[0]||[];
+    const playerTeam=teamA.includes(p.id)?0:1;
+    const winner=m.winner ?? (m.winningTeam==="Team A"?0:m.winningTeam==="Team B"?1:null);
+    return winner===playerTeam;
+  }).length;
+
+  const losses=matches.filter(m=>{
+    const teamA=m.teams?.[0]||[];
+    const playerTeam=teamA.includes(p.id)?0:1;
+    const winner=m.winner ?? (m.winningTeam==="Team A"?0:m.winningTeam==="Team B"?1:null);
+    return winner!==null&&winner!==playerTeam;
+  }).length;
+
+  $("app").innerHTML=`
+    <h2>Player Records Repository</h2>
+    <div class="panel">
+      <label for="recordPlayerSelect">Select player</label>
+      <select id="recordPlayerSelect">
+        ${sorted.map(x=>`
+          <option value="${x.id}" ${x.id===p.id?"selected":""}>
+            ${esc(x.name)}
+          </option>`).join("")}
+      </select>
+    </div>
+
+    <div class="panel">
+      <h3>${esc(p.name)}</h3>
+      <p class="muted">${esc(p.skill)} · Current rating: ${p.rating}</p>
+      <div class="stats">
+        <div class="stat"><span class="stat-label">Matches</span><strong>${matches.length}</strong></div>
+        <div class="stat"><span class="stat-label">Wins</span><strong>${wins}</strong></div>
+        <div class="stat"><span class="stat-label">Losses</span><strong>${losses}</strong></div>
+        <div class="stat"><span class="stat-label">Win rate</span><strong>${matches.length?(wins/matches.length*100).toFixed(1):"0.0"}%</strong></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Individual Match Score History</h3>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th><th>Court</th><th>Teammate</th><th>Opponents</th>
+              <th>Player score</th><th>Opponent score</th><th>Result</th><th>Rating change</th>
+            </tr>
+          </thead>
+          <tbody>${matches.map(m=>{
+            const teamA=m.teams?.[0]||[];
+            const teamB=m.teams?.[1]||[];
+            const side=teamA.includes(p.id)?0:1;
+            const myTeam=side===0?teamA:teamB;
+            const otherTeam=side===0?teamB:teamA;
+            const winner=m.winner ?? (m.winningTeam==="Team A"?0:m.winningTeam==="Team B"?1:null);
+            const result=winner===null?"Unknown":winner===side?"Win":"Loss";
+            const myScore=side===0?m.scoreA:m.scoreB;
+            const otherScore=side===0?m.scoreB:m.scoreA;
+            const change=(m.ratingChanges||[]).find(r=>r.id===p.id);
+
+            return `<tr>
+              <td>${esc(m.finishedAt?new Date(m.finishedAt).toLocaleString():"—")}</td>
+              <td>Court ${esc(m.court)}</td>
+              <td>${esc(myTeam.filter(id=>id!==p.id).map(nameOf).join(", ")||"—")}</td>
+              <td>${esc(otherTeam.map(nameOf).join(", ")||"—")}</td>
+              <td class="score-big">${myScore??"—"}</td>
+              <td>${otherScore??"—"}</td>
+              <td><span class="pill ${result==="Win"?"win":result==="Loss"?"loss":""}">${result}</span></td>
+              <td>${change?(change.ratingChange>0?"+":"")+change.ratingChange:"—"}</td>
+            </tr>`;
+          }).join("")||
+          '<tr><td colspan="8" class="empty">No match records for this player yet.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Rating history</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Date</th><th>Rating</th></tr></thead>
+          <tbody>${(p.ratingHistory||[]).slice().reverse().map(r=>`
+            <tr>
+              <td>${esc(new Date(r.date).toLocaleString())}</td>
+              <td>${r.rating}</td>
+            </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+
+  $("recordPlayerSelect").onchange=renderPlayerRecords;
+}
+
+function renderHistory() {
+  $("app").innerHTML=`
+    <h2>Match History Repository</h2>
+    <div class="panel">
+      <div class="section-title">
+        <h3>All completed matches (${state.history.length})</h3>
+        <button id="historyExport">Export backup</button>
+      </div>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Match</th><th>Date & time</th><th>Court</th><th>Team A</th>
+              <th>Score</th><th>Team B</th><th>Winner</th><th>Duration</th>
+            </tr>
+          </thead>
+          <tbody>${state.history.map(m=>`
+            <tr>
+              <td>#${esc(m.id)}</td>
+              <td>${esc(m.finishedAt?new Date(m.finishedAt).toLocaleString():"—")}</td>
+              <td>${esc(m.court)}</td>
+              <td>${esc((m.teams?.[0]||[]).map(nameOf).join(" & "))}</td>
+              <td><strong>${m.scoreA}–${m.scoreB}</strong></td>
+              <td>${esc((m.teams?.[1]||[]).map(nameOf).join(" & "))}</td>
+              <td><span class="pill win">${esc(m.winningTeam||"Unknown")}</span></td>
+              <td>${formatTime(m.duration)}</td>
+            </tr>`).join("")||
+            '<tr><td colspan="8" class="empty">No completed matches yet.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+
+  $("historyExport").onclick=exportBackup;
+}
+
+function exportBackup() {
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+
+  a.href=url;
+  a.download="zi-pickleball-backup-"+new Date().toISOString().slice(0,10)+".json";
+  a.click();
+
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function renderBackup() {
+  $("app").innerHTML=`
+    <h2>Backup & Restore</h2>
+    <div class="panel">
+      <h3>Export your records</h3>
+      <p>
+        Download your players, waiting queue, court setup, waiting priorities,
+        rating history, and completed match scores into a JSON backup file.
+      </p>
+      <button class="primary" id="exportBackup">Download JSON backup</button>
+    </div>
+
+    <div class="panel">
+      <h3>Restore a previous backup</h3>
+      <p class="muted">
+        Restoring replaces the current browser data. Export your current
+        records first if you want to keep them.
+      </p>
+      <label for="backupFile">Choose a backup JSON file</label>
+      <input id="backupFile" type="file" accept=".json,application/json">
+      <div class="actions">
+        <button class="primary" id="importBackup">Restore backup</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Storage information</h3>
+      <p>
+        Records are stored locally in this browser. They are not automatically
+        shared with another computer or phone. Export backups regularly.
+      </p>
+      <p class="small">
+        For shared multi-device access, this prototype would need a hosted
+        database and authentication.
+      </p>
+    </div>`;
+
+  $("exportBackup").onclick=exportBackup;
+
+  $("importBackup").onclick=()=>{
+    const file=$("backupFile").files[0];
+
+    if(!file) return alert("Choose a JSON backup file first.");
+
+    if(!confirm("Restore this backup and replace the current browser data? Export your current data first if needed.")) return;
+
+    const reader=new FileReader();
+
+    reader.onload=()=>{
+      try{
+        const data=JSON.parse(reader.result);
+
+        if(!data||!Array.isArray(data.players)||!Array.isArray(data.queue)||
+          !Array.isArray(data.courts)||!Array.isArray(data.history)) {
+          throw new Error("This file is not a valid Pickleball Open Play backup.");
+        }
+
+        data.courtCount=Math.max(1,Number(data.courtCount)||2);
+        data.targetScore=Math.max(1,Number(data.targetScore)||11);
+        data.nextPlayerId ||= 1;
+        data.nextMatchId ||= 1;
+
+        data.players.forEach(p=>{
+          p.wins=Number(p.wins)||0;
+          p.losses=Number(p.losses)||0;
+          p.games=Number(p.games)||0;
+          p.rating=Number(p.rating)||1000;
+          p.waitTurns=Number(p.waitTurns)||0;
+          p.ratingHistory ||= [
+            {date:new Date().toISOString(),rating:p.rating}
+          ];
+        });
+
+        state=data;
+
+        state.courts.forEach(c=>{
+          c.players ||= [];
+          c.teams ||= [];
+          c.elapsedBefore ||= 0;
+
+          const wasRunning = Boolean(c.startedAt);
+
+          if(c.startedAt){
+            c.elapsedBefore=(Number(c.elapsedBefore)||0)+
+              Math.max(0,Math.floor((Date.now()-c.startedAt)/1000));
+            c.startedAt=Date.now();
+          } else {
+            c.startedAt=null;
+          }
+
+          c.hasStarted = Boolean(
+            c.hasStarted || wasRunning || c.elapsedBefore > 0
+          );
+        });
+
+        ensureCourts();
+        save();
+        currentTab="dashboard";
+        render();
+        alert("Backup restored successfully.");
+      }catch(e){
+        alert("Restore failed: "+e.message);
+      }
+    };
+
+    reader.readAsText(file);
+  };
+}
+
+function render() {
+  ensureCourts();
+  save();
+
+  document.querySelectorAll("#nav button").forEach(b=>
+    b.classList.toggle("active",b.dataset.tab===currentTab));
+
+  if(currentTab==="dashboard") renderDashboard();
+  else if(currentTab==="players") renderPlayers();
+  else if(currentTab==="courts") renderCourts();
+  else if(currentTab==="queue") renderQueue();
+  else if(currentTab==="rankings") renderRankings();
+  else if(currentTab==="records") renderPlayerRecords();
+  else if(currentTab==="history") renderHistory();
+  else if(currentTab==="backup") renderBackup();
+}
+
+document.querySelectorAll("#nav button").forEach(b=>{
+  b.onclick=()=>{
+    currentTab=b.dataset.tab;
+    render();
+  };
+});
+
+document.addEventListener("click",e=>{
+  const btn=e.target.closest("[data-goto]");
+  if(btn){
+    currentTab=btn.dataset.goto;
+    render();
+  }
+});
+
+function updateTimers() {
+  state.courts.forEach(c=>{
+    const el=$("timer-"+c.number);
+    if(el) el.textContent=formatTime(elapsed(c));
+  });
+}
+
+ensureCourts();
+render();
+setInterval(updateTimers,1000);
+</script>
+</body>
+</html>
